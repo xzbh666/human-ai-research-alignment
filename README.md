@@ -4,6 +4,10 @@ A usable, local-first CLI and reusable agent Skill for maintaining research inte
 
 This MVP separates **human approval** from **empirical validation**. Accepting a hypothesis never proves it. It supports a new project, adoption midway through existing work, and resuming a tracked project.
 
+## ChatGPT web and marketplace installation
+
+See [INSTALL.md](INSTALL.md) for the existing private web plugin, a standalone upload ZIP, GitHub marketplace import for workspace admins, and local Codex marketplace setup. The distributable plugin is under `plugins/human-ai-research-alignment/`; the catalog is `.agents/plugins/marketplace.json`. A marketplace file is not a public directory listing.
+
 ## Install and try
 
 ```sh

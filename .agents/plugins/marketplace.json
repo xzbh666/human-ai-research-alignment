@@ -1,0 +1,20 @@
+{
+  "name": "human-ai-research-tools",
+  "interface": {
+    "displayName": "Human–AI Research Tools"
+  },
+  "plugins": [
+    {
+      "name": "human-ai-research-alignment",
+      "source": {
+        "source": "local",
+        "path": "./plugins/human-ai-research-alignment"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Scientific Research"
+    }
+  ]
+}

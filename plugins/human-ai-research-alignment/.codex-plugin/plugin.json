@@ -1,0 +1,15 @@
+{
+  "name": "human-ai-research-alignment",
+  "version": "0.1.1",
+  "description": "Human-confirmed research alignment, explicit provenance and privacy-conscious disclosure. Includes offline CLI and ChatGPT web workflow.",
+  "repository": "https://github.com/xzbh666/human-ai-research-alignment",
+  "skills": "./skills",
+  "interface": {
+    "displayName": "Human–AI Research Alignment",
+    "shortDescription": "研究对齐、人工审查与 AI 使用披露",
+    "longDescription": "支持新研究初始化、现有研究中途接入和保存状态恢复。通过问答提取八类研究状态，经人类确认后记录；支持显式 Git/会话关联、差异与结构性漂移检查、Markdown 披露导出。网页端文件执行能力取决于当前环境；不自动访问本机 Git 或抓取第三方对话。",
+    "category": "Scientific Research",
+    "capabilities": [],
+    "defaultPrompt": "请启动研究对齐流程，先确认我是从零开始、中途接入还是恢复研究，再逐步提问并让我确认研究状态。"
+  }
+}

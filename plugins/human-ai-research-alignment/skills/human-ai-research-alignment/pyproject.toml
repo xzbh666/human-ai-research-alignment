@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "human-ai-research-alignment"
+version = "0.1.0"
+description = "Local-first human–AI research alignment and explicit provenance"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+harp = "harp.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["harp*"]

@@ -1,0 +1,33 @@
+---
+name: human-ai-research-alignment
+description: Establish and maintain human-confirmed research goals, consensus, priors, hypotheses, evidence, findings, questions and decisions, with explicit Git/session provenance and disclosure export. Use for research onboarding, mid-project adoption, resuming tracked work and alignment review.
+---
+
+## ChatGPT web entry
+
+Respond in the user's language. On first use, ask whether they are starting new research, adopting an existing project, or resuming a saved state. Start with one or two material questions rather than displaying the full questionnaire. Convert supplied information into separately labeled proposals across the eight kinds, show the exact wording, uncertainty and evidence links, and ask the researcher to approve or correct it. Do not run review based on your own judgment. Explicit approval in chat authorizes recording a review for those exact shown proposals; ask how to label the reviewer if unknown.
+
+When a code/file execution environment is available, use the bundled `harp` module from this skill directory. Create a dedicated research working directory inside that environment and run commands with its explicit `--root`. Initialize in new or existing mode as appropriate. Use `propose` for conversational extraction, `review` after explicit human approval, `resume`, `diff` and `check` at checkpoints. The CLI's terminal `interview` is intended for local interactive use; in web chats, ask the questions in chat and use noninteractive CLI commands. Do not initialize an empty Git repository just to imply it contains the user's real Git history. Only capture actual supplied or connected repository material. The web environment does not automatically access the user's computer or its filesystem.
+
+For persistence across sessions, offer a downloadable checkpoint ZIP containing this project's `.ai-research/ledger.json`, with the source context and source files included only when requested. Build it only from the dedicated project directory. Explain that it contains private research content, and that the user must save it and upload it to resume elsewhere. Do not promise that temporary environment files survive a new chat. A disclosure report with text withheld is not a complete recovery checkpoint. On resume, inspect an uploaded checkpoint archive safely (reject traversal, symlinks and unrelated contents), restore its ledger to a dedicated directory, validate it with `resume`, and review Git drift/coverage rather than manufacturing matching history.
+
+If execution or file tools are unavailable, maintain a clearly labeled provisional state in chat, present the proposals and human reviews, and explain that the ledger, hashes and downloadable files have not been written. Do not fabricate CLI output, saved files, capture IDs, or persistence. Continue the alignment conversation and offer a structured Markdown state to save manually.
+
+This plugin has no remote server or automatic transcript collector. Uploaded files and chat content are handled by ChatGPT under the user's account/workspace settings; “local-first CLI” does not mean web uploads stay on the user's computer. Do not transmit research content to GitHub or another service unless the user authorizes that specific destination and content.
+
+## CLI and research record workflow
+
+
+Use the bundled Python CLI from this directory (`python3 -m harp`, or installed `harp`). All commands accept `--root PROJECT` before the subcommand. Read [README.md](README.md) for command examples and the data model.
+
+Choose entry mode from the user's situation: `init --mode new`, `init --mode existing`, or `resume` for a tracked project. Existing-project materials are an unverified imported baseline; do not reconstruct undocumented AI history as fact.
+
+Run `questions` and inspect `status`. Ask only questions material to the next step. In a new project prioritize goal and scope; with existing work prioritize current evidence, results and provenance gaps; when resuming review changes and open questions. The CLI provides deterministic missing-field prompts. Use your conversational understanding to extract proposals from information the user actually supplies; the CLI does not perform language-model extraction. Preserve source references and uncertainty. Show the exact proposed text to the user. Use `propose` for each distinct item, tagging the correct kind. Do not silently turn expectations into evidence, methodology preferences into validated assumptions, or preliminary results into verified findings.
+
+Approval and empirical validation are independent. A human can accept a prior without proving it. Findings should reference evidence IDs; verified status is a recorded assertion requiring reviewed evidence, not an automatic verification result. Preserve contradictory evidence and disagreements as open questions. For revisions, use `--supersedes ID`, show `diff ID`, and ask the researcher to review the change. Review only the exact proposal or capture that the human has explicitly approved. Never invent a reviewer or run `review --confirm` based solely on your own agreement. A rejection remains in history.
+
+Record AI involvement using `session` with the provider/model actually known (use `unknown` when unavailable). A summary is supplied intentionally; no conversation is collected automatically. `--origin imported` marks user-provided historical metadata; neither manual nor imported entries prove completeness or authorship. Never request hidden reasoning. Do not inspect unrelated chat storage, credentials or research files to populate the ledger.
+
+At a meaningful checkpoint, create `capture --session ID --items ...`, inspect the relevant Git diff using the user's normal review tools, and present the capture for human review. The CLI records commit and hashes, not patches or line attribution. A session association is self-reported. Untracked file contents are excluded. Run `check` before reporting shared conclusions; this detects structural state/Git changes, not scientific or semantic truth. Explain flagged uncertainty and resolve it with the researcher instead of changing their intent automatically.
+
+Use `export` for a default text-withheld disclosure. `--include-shareable` adds only explicitly marked shareable research text plus provider/model names; inspect the result before any upload. Keep `.ai-research/` out of Git. Do not upload raw records or disclosure reports without authorization for the destination and content. No background collection, network access or Git hooks are installed. The MVP is single-writer; do not run concurrent mutating commands.
