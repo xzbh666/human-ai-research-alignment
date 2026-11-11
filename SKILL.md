@@ -1,0 +1,18 @@
+---
+name: human-ai-research-alignment
+description: Establish and maintain human-confirmed research goals, consensus, priors, hypotheses, evidence, findings, questions and decisions, with explicit Git/session provenance and disclosure export. Use for research onboarding, mid-project adoption, resuming tracked work and alignment review.
+---
+
+Use the bundled Python CLI from this directory (`python3 -m harp`, or installed `harp`). All commands accept `--root PROJECT` before the subcommand. Read [README.md](README.md) for command examples and the data model.
+
+Choose entry mode from the user's situation: `init --mode new`, `init --mode existing`, or `resume` for a tracked project. Existing-project materials are an unverified imported baseline; do not reconstruct undocumented AI history as fact.
+
+Run `questions` and inspect `status`. Ask only questions material to the next step. In a new project prioritize goal and scope; with existing work prioritize current evidence, results and provenance gaps; when resuming review changes and open questions. The CLI provides deterministic missing-field prompts. Use your conversational understanding to extract proposals from information the user actually supplies; the CLI does not perform language-model extraction. Preserve source references and uncertainty. Show the exact proposed text to the user. Use `propose` for each distinct item, tagging the correct kind. Do not silently turn expectations into evidence, methodology preferences into validated assumptions, or preliminary results into verified findings.
+
+Approval and empirical validation are independent. A human can accept a prior without proving it. Findings should reference evidence IDs; verified status is a recorded assertion requiring reviewed evidence, not an automatic verification result. Preserve contradictory evidence and disagreements as open questions. For revisions, use `--supersedes ID`, show `diff ID`, and ask the researcher to review the change. Review only the exact proposal or capture that the human has explicitly approved. Never invent a reviewer or run `review --confirm` based solely on your own agreement. A rejection remains in history.
+
+Record AI involvement using `session` with the provider/model actually known (use `unknown` when unavailable). A summary is supplied intentionally; no conversation is collected automatically. `--origin imported` marks user-provided historical metadata; neither manual nor imported entries prove completeness or authorship. Never request hidden reasoning. Do not inspect unrelated chat storage, credentials or research files to populate the ledger.
+
+At a meaningful checkpoint, create `capture --session ID --items ...`, inspect the relevant Git diff using the user's normal review tools, and present the capture for human review. The CLI records commit and hashes, not patches or line attribution. A session association is self-reported. Untracked file contents are excluded. Run `check` before reporting shared conclusions; this detects structural state/Git changes, not scientific or semantic truth. Explain flagged uncertainty and resolve it with the researcher instead of changing their intent automatically.
+
+Use `export` for a default text-withheld disclosure. `--include-shareable` adds only explicitly marked shareable research text plus provider/model names; inspect the result before any upload. Keep `.ai-research/` out of Git. Do not upload raw records or disclosure reports without authorization for the destination and content. No background collection, network access or Git hooks are installed. The MVP is single-writer; do not run concurrent mutating commands.
