@@ -83,4 +83,29 @@ class WorkflowTests(unittest.TestCase):
   s=self.runcli('session','--provider','x','--model','x','--summary','x')['id']
   self.runcli('capture','--session',s,ok=False)
 
+ def test_rejected_findings_do_not_block_current_state(self):
+  self.init(); finding=self.propose('findings','Unsupported')
+  self.runcli('review',finding,'--verdict','reject','--reviewer','R','--reason','Unsupported','--confirm')
+  self.assertEqual(self.runcli('check')['flags'],[])
+ def test_replacement_chain_and_stale_parallel_proposal(self):
+  self.init(); first=self.propose(); self.accept(first)
+  second=self.propose('goals','Second','--supersedes',first)
+  stale=self.propose('goals','Parallel','--supersedes',first)
+  self.accept(second)
+  self.runcli('review',stale,'--verdict','accept','--reviewer','R','--reason','Stale','--confirm',ok=False)
+  self.runcli('review',stale,'--verdict','reject','--reviewer','R','--reason','Stale','--confirm')
+  third=self.propose('goals','Third','--supersedes',second); self.accept(third)
+  self.assertEqual(self.runcli('check')['flags'],[])
+  self.assertEqual(self.runcli('resume')['active'][0]['id'],third)
+ def test_superseded_evidence_cannot_verify_new_finding(self):
+  self.init(); old=self.propose('evidence'); self.accept(old)
+  new=self.propose('evidence','Corrected evidence','--supersedes',old); self.accept(new)
+  self.runcli('propose','findings','Outdated','--source','test','--evidence',old,'--validation','verified',ok=False)
+ def test_unborn_git_and_imported_session(self):
+  self.git('init'); self.init('existing')
+  session=self.runcli('session','--provider','unknown','--model','unknown','--summary','Historical metadata','--origin','imported')['id']
+  capture=self.runcli('capture','--session',session)['id']
+  self.assertIsNone(self.runcli('status')['captures'][capture]['git']['head'])
+  self.assertEqual(self.runcli('status')['sessions'][session]['origin'],'imported')
+
 if __name__=='__main__': unittest.main()

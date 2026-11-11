@@ -41,7 +41,7 @@ def snapshot(root):
  if git(root, 'rev-parse', '--show-toplevel', optional=True) is None:
   return {'available': False}
  status = git(root, 'status', '--porcelain=v1', '-z', '--untracked-files=normal')
- diff = git(root, 'diff', '--binary', 'HEAD', optional=True) if head else git(root, 'diff', '--cached', '--binary')
+ diff = git(root, 'diff', '--binary', 'HEAD') if head else git(root, 'diff', '--cached', '--binary')
  return {'available': True, 'head': head.decode().strip() if head else None,
          'status_sha256': hashlib.sha256(status).hexdigest(),
          'diff_sha256': hashlib.sha256(diff or b'').hexdigest(),
@@ -116,9 +116,9 @@ def report(data, root):
  flags = []
  for i,p in items.items():
   if i not in reviews: flags.append({'type':'unreviewed', 'id':i})
-  if p['kind'] == 'findings' and (not p['evidence'] or any(e not in live for e in p['evidence'])):
+  if (i in live or i not in reviews) and p['kind'] == 'findings' and (not p['evidence'] or any(e not in live for e in p['evidence'])):
    flags.append({'type':'unsupported_finding', 'id':i})
-  if p.get('supersedes') and i not in live and reviews.get(i,{}).get('verdict') != 'reject':
+  if p.get('supersedes') and i not in reviews:
    flags.append({'type':'proposed_drift', 'id':i, 'from':p['supersedes']})
  baseline = next(reversed(captures.values()))['git'] if captures else data['baseline']
  current = snapshot(root)
@@ -144,7 +144,7 @@ def markdown(data, root, include_text=False):
   lines.append(f"- {i}: provider={s['provider'] if include_text else '[withheld]'}; model={s['model'] if include_text else '[withheld]'}; origin={s['origin']}")
  lines += ['', '## Git provenance']
  for i,c in captures.items():
-  lines.append(f"- {i}: session={c['session']}; commit={c['git'].get('head')}; reviewed={reviews.get(i,{}).get('verdict','pending')}; attribution=self-reported")
+  lines.append(f"- {i}: session={c['session']}; commit={c['git'].get('head')}; diff_sha256={c['git'].get('diff_sha256')}; status_sha256={c['git'].get('status_sha256')}; items={','.join(c['items'])}; reviewed={reviews.get(i,{}).get('verdict','pending')}; attribution=self-reported")
  lines += ['', '## Review and drift checks', '```json', json.dumps(report(data, root),indent=2), '```', '',
   'Privacy: default export withholds research text and provider/model names. IDs, timestamps, Git hashes and counts remain linkable metadata.',
   'This report is a review aid; it does not certify completeness, authorship, research validity, or policy compliance.']
@@ -182,7 +182,7 @@ def main(argv=None):
     if args.supersedes and (args.supersedes not in active(items,reviews) or items[args.supersedes]['kind']!=args.kind): raise ValueError('Supersedes must name an active approved item of the same kind')
     for ref in args.evidence:
      if ref not in items or items[ref]['kind']!='evidence': raise ValueError('Evidence ID must refer to an evidence item')
-    if args.validation=='verified' and args.kind=='findings' and (not args.evidence or any(reviews.get(i,{}).get('verdict')!='accept' for i in args.evidence)):
+    if args.validation=='verified' and args.kind=='findings' and (not args.evidence or any(i not in active(items,reviews) for i in args.evidence)):
      raise ValueError('Verified findings require reviewed evidence; validation remains a human assertion')
     result={'id':store.append(data,'proposal',{'kind':args.kind,'text':args.text,'source':args.source,'evidence':args.evidence,'supersedes':args.supersedes,'validation':args.validation,'visibility':args.visibility})}
    elif args.cmd=='review':
